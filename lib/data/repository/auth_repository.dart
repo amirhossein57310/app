@@ -7,6 +7,8 @@ import 'package:hess_app/data/daasource/auth_datasource.dart';
 abstract class IAuthenticationRepositories {
   Future<Either<String, String>> verifing(String? mobile, String? email,
       String firstname, String lastname, String code);
+  Future<Either<String, String>> secondVerifing(String? mobile, String? email,
+      String? firstname, String? lastname, String code);
 
   Future<Either<String, String>> login(String? mobile, String? email);
 }
@@ -37,6 +39,18 @@ class AuthenticationRepositories extends IAuthenticationRepositories {
       }
     } on DioException catch (ex) {
       return left('${ex.message!}');
+    }
+  }
+
+  @override
+  Future<Either<String, String>> secondVerifing(String? mobile, String? email,
+      String? firstname, String? lastname, String code) async {
+    try {
+      await _datasource.secondVerifing(
+          mobile, email, firstname, lastname, code);
+      return right('ثبت نام با موفقیت انجام شد');
+    } on DioException catch (ex) {
+      return left(ex.message!);
     }
   }
 }

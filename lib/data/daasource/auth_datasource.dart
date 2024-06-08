@@ -4,6 +4,8 @@ import 'package:hess_app/util/auth_manager.dart';
 abstract class IauthenticationDataSource {
   Future<void> verifing(String? mobile, String? email, String firstname,
       String lastname, String code);
+  Future<void> secondVerifing(String? mobile, String? email, String? firstname,
+      String? lastname, String code);
 
   Future<String> login(String? mobile, String? email);
 }
@@ -19,8 +21,8 @@ class Authentication extends IauthenticationDataSource {
       var response = await _dio.post(
         'verifying',
         data: {
-          'mobile': mobile,
-          'email': email,
+          'mobile': mobile ?? null,
+          'email': email ?? null,
           'firstname': firstname,
           'lastname': lastname,
           'code': code,
@@ -63,5 +65,33 @@ class Authentication extends IauthenticationDataSource {
       // }
     }
     return '';
+  }
+
+  @override
+  Future<void> secondVerifing(String? mobile, String? email, String? firstname,
+      String? lastname, String code) async {
+    try {
+      var response = await _dio.post(
+        'verifying',
+        data: {
+          'mobile': mobile ?? null,
+          'email': email ?? null,
+          'firstname': firstname ?? null,
+          'lastname': lastname ?? null,
+          'code': code,
+        },
+      );
+      // if (response.statusCode == 200) {
+      //   login(username, password);
+      // }
+      //  if (response.statusCode == 200) {
+      //   login(mobile, email);
+      // }
+      AuthManager.saveToken(response.data['data']['userToken']);
+      print(response.data['data']['userToken']);
+      return response.data['data']['userToken'];
+    } on DioException catch (ex) {
+      throw ex;
+    }
   }
 }

@@ -18,5 +18,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           event.firstname, event.lastname, event.code);
       emit(AuthResponseState(response));
     });
+    on<AuthSecondVerifingRequest>((event, emit) async {
+      //  emit(AuthLoadingState());
+      var response = await _repository.secondVerifing(event.mobile, event.email,
+          event.firstname, event.lastname, event.code);
+      emit(AuthResponseState(response));
+    });
   }
 }
